@@ -1,37 +1,101 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // keyBind.js
 
-// main
+/*
+#SUPPORTED KEYS
+
+For modifier keys you can use shift, ctrl, alt, option, meta, and command.
+Other special keys are backspace, tab, enter, return, capslock, esc, escape,
+    space, pageup, pagedown, end, home, left, up, right, down, ins, and del.
+Any other key you should be able to reference by name like a, /, $, *, or =.
+ */
 module.exports = (function () {
-	var keyMap = {
-		//command:keyName
-		"NEW_MAP": ["m"],
-		"NEW_MAPSET": ["M"]
-	};
-	return keyMap;
+    var constants = {
+        "lf2net": "l f 2 . n e t",
+        "konami": "up up down down left right left right b a",
+        "command_SAndControl_S": "mod+s"
+    };
+    var keyMap = {
+        //command:keyName
+        "COMMAND_LIST": ["h h h", "h a"],
+        "FILE_OPEN": ["mod+o"],
+        "FILE_SAVE": ["mod+s"],
+        "INSERT_MAP": ["m"],
+        "INSERT_MAPSET": ["shift+m"],
+        "SETTING_GODMODE": [constants.lf2net, constants.konami]
+    };
+    return keyMap;
 })();
 
 },{}],2:[function(require,module,exports){
 // includes
 require("./lib/mousetrap");
+//require("./lib/mousetrap.min");
 var $ = require("jquery"),
-	//screenResizeHandler = require("./system/screenSize"),
-	KeyMap = require("./KeyMap");
+    //screenResizeHandler = require("./system/screenSize"),
+    KeyMap = require("./KeyMap");
 
 // entry point of the program
 // done on document load
 $(function () {
-	// bind windows resize to screenSize.js
-	//$(window).resize(screenResizeHandler);
-	// initial run
-	//screenResizeHandler();
-	bindKeys();
+    // bind windows resize to screenSize.js
+    //$(window).resize(screenResizeHandler);
+    // initial run
+    //screenResizeHandler();
+    var commands = _createCommandCallbacks();
+    _bindKeys(commands);
 
 
 });
 
-function bindKeys() {
+// local functions
+//
 
+/**
+ * Takes a keymap and map keys to commands
+ * @param {array<string>} commands strings representing keyboard combinations
+ */
+function _bindKeys(commands) {
+    console.log(KeyMap);
+    for (var key in KeyMap) {
+        if (!KeyMap.hasOwnProperty(key)) continue;
+        //console.log(KeyMap[key] + " " + key);
+        //console.log(commands[key]);
+        Mousetrap.bind(KeyMap[key], commands[key]);
+    };
+}
+
+/**
+ * Creates all available commands and operations of the software,
+ * and their basic callbacks
+ */
+function _createCommandCallbacks() {
+    var commandCallbacks = {
+        "COMMAND_LIST": function () {
+            console.log("Command list:")
+            console.log(Object.keys(commandCallbacks));
+        },
+        "FILE_OPEN": function () {
+            console.log("File open");
+        },
+        "FILE_SAVE": function () {
+            console.log("file save");
+        },
+        "INSERT_MAP": function () {
+            console.log("new map item");
+        },
+        "INSERT_MAPSET": function () {
+            console.log("new map set item");
+        },
+        "SETTING_GODMODE": function () {
+            console.log("God Mode Engaged");
+        },
+        "COMMAND_NOTHING": function () {
+            //
+        }
+
+    }
+    return commandCallbacks;
 }
 
 },{"./KeyMap":1,"./lib/mousetrap":3,"jquery":4}],3:[function(require,module,exports){
