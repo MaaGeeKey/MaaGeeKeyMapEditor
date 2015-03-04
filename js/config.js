@@ -2,6 +2,12 @@
 
 module.exports = (function () {
 
-    return {};
+	return {
+		debug: true,
+		featureFlag: {
+			"keyMap": 1,
+			"mouseTrap": 1
+		}
+	};
 
 })();
